@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_screen3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backcolor"
+    android:orientation="vertical"
+    tools:context="com.example.mohamed.project.screen3">
+
+    <Button
+        android:id="@+id/buShowall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="130dp"
+        android:background="#008080"
+        android:text="Show all"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:onClick="showallbutton"
+
+        />
+
+    <Button
+        android:id="@+id/buFavourite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="100dp"
+        android:background="#008080"
+        android:text="Favourite"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:onClick="showallbutton"
+
+        />
+
+</LinearLayout>
