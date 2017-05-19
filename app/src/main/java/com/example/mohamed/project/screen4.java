@@ -7,12 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -49,12 +48,11 @@ public class screen4 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_screen4);
+        setContentView(R.layout.movies_list);
         final MovieLab movieLab=MovieLab.getInstance(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(screen4.this));
 
-        int x=0;
         if (CheckConnection.isNetworkAvailableAndConnected(this)&& CheckConnection.isNetworkConnected(this) && type.equals("movie")){
         StringRequest stringRequest = new StringRequest(Request.Method.GET, Url, new Response.Listener<String>() {
             @Override
@@ -69,10 +67,10 @@ public class screen4 extends AppCompatActivity {
 
                         String id =  jsonObject.getString("movie_id_27");
                         String name =  jsonObject.getString("movie_name_27");
-                     //   String image=jsonObject.getString("movie_img_27");
+                       // String image=jsonObject.getString("movie_img_27");
 
                         String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(i)+".jpg";
-                    //    Toast.makeText(screen4.this, image+"", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(screen4.this, image, Toast.LENGTH_SHORT).show();
                         Movie Movie = new Movie(id, image, name);
                         movieLab.deleteMovie(Movie.getId());
                         movieLab.insertMovies(Movie);
@@ -105,7 +103,6 @@ public class screen4 extends AppCompatActivity {
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
     }else if (type.equals("favourite")){
-            Toast.makeText(this, movieLab.getFavourites().size()+"", Toast.LENGTH_SHORT).show();
             mRecyclerView.setAdapter(new MovieAdapter(movieLab.getFavourites()));
         }else if (type.equals("movie")){
             mRecyclerView.setAdapter(new MovieAdapter(movieLab.getMovies()));
@@ -114,18 +111,35 @@ public class screen4 extends AppCompatActivity {
     }
 
     class MovieHolder extends RecyclerView.ViewHolder{
-        private ImageView mImageView;
+        private KenBurnsView mImageView;
         private TextView mTextView;
         public MovieHolder(View itemView) {
             super(itemView);
             mTextView= (TextView) itemView.findViewById(R.id.movie_name);
-            mImageView= (ImageView) itemView.findViewById(R.id.movie_image);
+            mImageView= (KenBurnsView) itemView.findViewById(R.id.movie_image);
 
         }
-
+        Picasso.Builder builder;
         public void bind(final Movie movie){
           //  Toast.makeText(screen4.this, movie.getName()+"", Toast.LENGTH_SHORT).show();
-           Picasso.with(screen4.this).load(Uri.parse(movie.getImage())).into(mImageView);
+             builder = new Picasso.Builder(screen4.this);
+            builder.listener(new Picasso.Listener()
+            {
+                @Override
+                public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception)
+                {
+                    int x=(int) (Math.random()*10)-1;
+                    getLayoutPosition();
+
+                    String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(getLayoutPosition())+".jpg";
+                    Movie movie1=movies.get(getLayoutPosition());
+                    movie1.setImage(image);
+                   MovieLab.getInstance(screen4.this).update(movie1);
+                    builder.build().load(Uri.parse(image)).into(mImageView);
+                }
+            });
+            builder.build().load(Uri.parse(movie.getImage())).into(mImageView);
+          // Picasso.with(screen4.this).load(Uri.parse(movie.getImage())).into(mImageView);
             mTextView.setText(movie.getName());
             mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override

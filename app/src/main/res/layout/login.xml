@@ -4,9 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    tools:context="com.example.mohamed.project.MainActivity">
+    android:layout_marginTop="30dp"
+    tools:context="com.example.mohamed.project.LoginActivity">
 
         <LinearLayout
+            android:layout_marginTop="20dp"
+            android:gravity="center"
             android:layout_margin="16dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -14,13 +17,14 @@
             >
 
 
-            <ImageView
+            <com.flaviofaria.kenburnsview.KenBurnsView
+                android:layout_marginTop="10dp"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher"
+                 android:scaleType="centerCrop"
+                android:src="@drawable/movie"
                 />
 
             <android.support.design.widget.TextInputLayout
@@ -33,7 +37,6 @@
                     android:padding="12dp"
                     android:hint=" Enter your Email"
                     android:id="@+id/emailtxt"
-                    android:background="@drawable/edit_text_shape"
                     />
 
             </android.support.design.widget.TextInputLayout>
@@ -47,7 +50,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:padding="12dp"
-                    android:background="@drawable/edit_text_shape"
                     android:inputType="textPassword"
                     android:hint="Enter your Password"
                     android:id="@+id/passwordtxt"

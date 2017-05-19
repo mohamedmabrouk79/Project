@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -20,7 +21,7 @@ import com.squareup.picasso.Picasso;
  */
 
 public class AddToFavouriteActvity extends AppCompatActivity {
-    private ImageView mImageView;
+    private KenBurnsView mImageView;
     private Button AddButton;
     private TextView MovieName;
     public static final  String KEY="KEY";
@@ -34,7 +35,7 @@ public class AddToFavouriteActvity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_favourite);
-        mImageView= (ImageView) findViewById(R.id.add_image_view);
+        mImageView= (KenBurnsView) findViewById(R.id.add_image_view);
         AddButton= (Button) findViewById(R.id.add_to_fav);
         MovieName= (TextView) findViewById(R.id.movie_name_fav);
         Picasso.with(this).load(Uri.parse(movie.getImage())).into(mImageView);
