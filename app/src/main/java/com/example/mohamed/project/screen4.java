@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class screen4 extends AppCompatActivity {
     List<Movie> movies = new ArrayList<>();
     private RecyclerView mRecyclerView;
    static   String type;
+    private ProgressBar mProgressBar;
     private static String Url = "http://haladoctor.com/testSec/getAllMovies.php?studentNumber=3&studentSec=3&studentDep=3";
 
     public static Intent newIntent(Context context,String types){
@@ -49,6 +51,8 @@ public class screen4 extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movies_list);
+        mProgressBar= (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
         final MovieLab movieLab=MovieLab.getInstance(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(screen4.this));
@@ -84,8 +88,7 @@ public class screen4 extends AppCompatActivity {
                             }
                         }
                     }
-                    mRecyclerView.setAdapter(new MovieAdapter(movies));
-
+                    upadte(movies);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -104,11 +107,17 @@ public class screen4 extends AppCompatActivity {
             requestQueue.add(stringRequest);
     }else if (type.equals("favourite")){
             movies=  movieLab.getFavourites();
-            mRecyclerView.setAdapter(new MovieAdapter(movies));
-        }else if (type.equals("movie")){
+            upadte(movies);
+    }else if (type.equals("movie")){
             movies=  movieLab.getMovies();
-            mRecyclerView.setAdapter(new MovieAdapter(movies));}
+           upadte(movies);
+        }
 
+    }
+
+    public void upadte(List<Movie> mMovies){
+        mProgressBar.setVisibility(View.GONE);
+        mRecyclerView.setAdapter(new MovieAdapter(mMovies));
     }
 
     class MovieHolder extends RecyclerView.ViewHolder{
