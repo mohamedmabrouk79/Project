@@ -17,7 +17,7 @@
             >
 
 
-            <com.flaviofaria.kenburnsview.KenBurnsView
+            <ImageView
                 android:layout_marginTop="10dp"
                 android:layout_width="200dp"
                 android:layout_height="200dp"

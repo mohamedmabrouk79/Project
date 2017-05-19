@@ -34,7 +34,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class screen4 extends AppCompatActivity {
-    ArrayList<Movie> movies = new ArrayList<>();
+    List<Movie> movies = new ArrayList<>();
     private RecyclerView mRecyclerView;
    static   String type;
     private static String Url = "http://haladoctor.com/testSec/getAllMovies.php?studentNumber=3&studentSec=3&studentDep=3";
@@ -103,10 +103,11 @@ public class screen4 extends AppCompatActivity {
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
     }else if (type.equals("favourite")){
-            mRecyclerView.setAdapter(new MovieAdapter(movieLab.getFavourites()));
+            movies=  movieLab.getFavourites();
+            mRecyclerView.setAdapter(new MovieAdapter(movies));
         }else if (type.equals("movie")){
-            mRecyclerView.setAdapter(new MovieAdapter(movieLab.getMovies()));
-        }
+            movies=  movieLab.getMovies();
+            mRecyclerView.setAdapter(new MovieAdapter(movies));}
 
     }
 
