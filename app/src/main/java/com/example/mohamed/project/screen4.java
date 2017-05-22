@@ -3,6 +3,7 @@ package com.example.mohamed.project;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,12 +40,70 @@ public class screen4 extends AppCompatActivity {
     private RecyclerView mRecyclerView;
    static   String type;
     private ProgressBar mProgressBar;
-    private static String Url = "http://haladoctor.com/testSec/getAllMovies.php?studentNumber=3&studentSec=3&studentDep=3";
+    private static String Url = "http://haladoctor.com/testSec/getAllMovies.php?studentNumber=3&studentSec=3&studentDep=2";
 
     public static Intent newIntent(Context context,String types){
         Intent intent=new Intent(context,screen4.class);
         type=types;
         return intent;
+    }
+
+    class getMovie extends AsyncTask<Void,Void,String>{
+      MovieLab mMovieLab;
+         getMovie(MovieLab movieLab){
+             mMovieLab=movieLab;
+         }
+        @Override
+        protected String doInBackground(Void... params) {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        Toast.makeText(screen4.this,jsonArray.length()+":",Toast.LENGTH_LONG).show();
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject =jsonArray.getJSONObject(i);
+
+                            String id =  jsonObject.getString("movie_id_18");
+                            String name =  jsonObject.getString("movie_name_18");
+                            // String image=jsonObject.getString("movie_img_18");
+
+                            String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(i)+".jpg";
+                            //Toast.makeText(screen4.this, image, Toast.LENGTH_SHORT).show();
+                            Movie Movie = new Movie(id, image, name);
+                            mMovieLab.deleteMovie(Movie.getId());
+                            mMovieLab.insertMovies(Movie);
+                            movies.add(Movie);
+
+                        }
+                        for (Movie movie:movies){
+                            for (Movie movie1:mMovieLab.getFavourites()) {
+                                if (movie1.getId().equals(movie.getId())){
+                                    mMovieLab.update(movie);
+                                }
+                            }
+                        }
+                        upadte(movies);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }
+
+            );
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(stringRequest);
+            return null;
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,53 +117,8 @@ public class screen4 extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(screen4.this));
 
         if (CheckConnection.isNetworkAvailableAndConnected(this)&& CheckConnection.isNetworkConnected(this) && type.equals("movie")){
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, Url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    Toast.makeText(screen4.this,jsonArray.length()+":",Toast.LENGTH_LONG).show();
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject =jsonArray.getJSONObject(i);
-
-                        String id =  jsonObject.getString("movie_id_27");
-                        String name =  jsonObject.getString("movie_name_27");
-                       // String image=jsonObject.getString("movie_img_27");
-
-                        String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(i)+".jpg";
-                        //Toast.makeText(screen4.this, image, Toast.LENGTH_SHORT).show();
-                        Movie Movie = new Movie(id, image, name);
-                        movieLab.deleteMovie(Movie.getId());
-                        movieLab.insertMovies(Movie);
-                        movies.add(Movie);
-
-                    }
-                    for (Movie movie:movies){
-                        for (Movie movie1:movieLab.getFavourites()) {
-                            if (movie1.getId().equals(movie.getId())){
-                                movieLab.update(movie);
-                            }
-                        }
-                    }
-                    upadte(movies);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }
-
-        );
-            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-            requestQueue.add(stringRequest);
+            getMovie getMovie=new getMovie(movieLab);
+            getMovie.execute();
     }else if (type.equals("favourite")){
             movies=  movieLab.getFavourites();
             upadte(movies);
@@ -141,8 +155,8 @@ public class screen4 extends AppCompatActivity {
                     int x=(int) (Math.random()*10)-1;
                     getLayoutPosition();
 
-                    String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(getLayoutPosition())+".jpg";
-                    Movie movie1=movies.get(getLayoutPosition());
+                    String image = "http://loremflickr.com/cache/images/f512fedb2caf38c32d290f98abfddbac."+getRandomNumber().get(getLayoutPosition()<0?0:getLayoutPosition())+".jpg";
+                    Movie movie1=movies.get(getLayoutPosition()<0?0:getLayoutPosition());
                     movie1.setImage(image);
                    MovieLab.getInstance(screen4.this).update(movie1);
                     builder.build().load(Uri.parse(image)).into(mImageView);

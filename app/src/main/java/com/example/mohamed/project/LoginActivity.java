@@ -80,7 +80,7 @@ private Button Login;
                                             JSONObject jsonObject = new JSONObject(response);
                                             responseMessage[0] = jsonObject.getString("status");
 
-                                            if (!responseMessage[0].equals("1")) {
+                                            if (responseMessage[0].equals("-1")) {
                                                 Toast.makeText(LoginActivity.this, "Login Error " + response, Toast.LENGTH_LONG).show();
                                                 ResetLogin();
                                                 progressDialog.dismiss();
